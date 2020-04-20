@@ -1,47 +1,91 @@
 #include <stdio.h>
 #include <stdlib.h>
-struct t1 {
-    struct t1 *left;
-    struct t1 *right;
+struct tree {
+    struct tree *left;
+    struct tree *right;
     int data;
-}*tt;
-struct t1* fun(struct t1 *t)
+}*t;
+void form_bst(struct tree*);
+int height(struct tree*);
+int max(int,int);
+void inorder(struct tree*);
+int unbalance(struct tree*);
+int main()
 {
-    int l,r;
-    t = (struct t1 *)malloc(sizeof(struct t1));
-    printf("Data for this node:\n");
-    scanf("%d",&(t->data));
-    printf("Enter 1 for adding left child else 0\n");
-    scanf("%d",&l);
-    if(l)
-        t->left=fun(t->left);
-    else
-        t->left = NULL;
-    printf("Enter 1 for adding right child else 0\n");
-    scanf("%d",&r);
-    if(r)
-        t->right=fun(t->right);
-    else
-        t->right = NULL;
-    return t;
+    t = (struct tree *)malloc(sizeof(struct tree));
+    t->data = 1;
+    t->left = NULL;
+    t->right = NULL;
+    form_bst(t);
+    inorder(t);
+    printf("%d",height(t));
 }
-void postorder(struct t1 *t)
+
+void form_bst(struct tree *root)
+{
+    int a[5]= {2,3,4,5,6};
+    for(int i=0;i<5;i++)
+    {
+        struct tree *t = root;
+        struct tree *pre = root;
+        while(t)
+        {
+            pre = t;
+            if(a[i]>t->data)
+                t = t->right;
+            else
+                t = t->left;
+        }
+        t = (struct tree *)malloc(sizeof(struct tree));
+        if(a[i]>pre->data)
+            pre->right = t;
+        else
+            pre->left = t;
+        t->data = a[i];
+        t->left = NULL;
+        t->right = NULL;
+    }
+
+}
+
+int height(struct tree *t)
+{
+    if(t&&(t->left||t->right))
+        return 1 + max(height(t->left),height(t->right));
+    else
+        return 1;
+}
+
+int max(int a,int b)
+{
+    return a>b?a:b;
+}
+
+int unbalance(struct tree *t)
+{
+    int count=0;
+    while(t)
+    {
+        if((height(t->left)-height(t->right) >= -1) && (height(t->left)-height(t->right) <= 1))
+            count;
+        else
+            count++;
+        t = t->left;
+    }
+
+    return count;
+}
+
+void inorder(struct tree *t)
 {
     if(t != NULL)
     {
         if(t->left != NULL)
-            postorder(t->left);
+            inorder(t->left);
+
+    printf("%d\n",t->data);
 
         if(t->right != NULL)
-            postorder(t->right);
-
-        printf("%d\n",t->data);
+            inorder(t->right);
     }
-}
-
-void main()
-{
-    printf("~~~~~~~~~~~~~~~~~~~~~POST-ORDER METHOD~~~~~~~~~~~~~~~~~~~~~~``\n");
-    tt=fun(tt);
-    postorder(tt);
 }
